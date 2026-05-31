@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MIMI Business Club™ — Plateforme de Gestion</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --noir:#0A0A0A; --surface:#111111; --card:#181818; --card2:#1E1E1E;
+  --border:#252525; --border2:#2E2E2E;
+  --or:#C89B2A; --or-light:#F0D060; --or-dark:#8B6914; --or-bg:rgba(200,155,42,0.08);
+  --rouge:#A01020; --rouge-fonce:#6B0A14; --rouge-bg:rgba(160,16,32,0.1);
+  --text:#F5F0E8; --text2:#A09880; --text3:#5A5040;
+  --green:#2ECC71; --green-bg:rgba(46,204,113,0.1);
+  --yellow:#F1C40F; --yellow-bg:rgba(241,196,15,0.1);
+  --red:#E74C3C; --red-bg:rgba(231,76,60,0.1);
+  --blue:#3498DB; --blue-bg:rgba(52,152,219,0.1);
+  --r:12px; --r-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{background:var(--noir);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4,h5{font-family:'Syne',sans-serif}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh;flex-direction:column;animation:fadeIn .3s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== LOGIN ===== */
+#s-login{background:linear-gradient(160deg,#0D0D0D 0%,#1A0810 50%,#0D0A00 100%);align-items:center;justify-content:center;padding:2rem 1.5rem;position:relative;overflow:hidden}
+#s-login::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(200,155,42,0.06) 0%,transparent 70%);pointer-events:none}
+.login-box{background:rgba(24,24,24,0.95);border:1px solid rgba(200,155,42,0.2);border-radius:20px;padding:2.5rem 2rem;width:100%;max-width:420px;position:relative;z-index:1;backdrop-filter:blur(10px)}
+.logo-mark{display:inline-flex;align-items:center;gap:10px;background:var(--rouge);border-radius:100px;padding:6px 18px 6px 8px;margin-bottom:1.5rem}
+.logo-mark .dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--or-light),var(--or));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:800;color:var(--rouge-fonce)}
+.logo-mark span{font-size:11px;font-weight:600;color:#fff;letter-spacing:1.5px}
+.login-box h1{font-size:1.9rem;font-weight:800;line-height:1.1;margin-bottom:.3rem}
+.login-box h1 span{color:var(--or)}
+.login-box .sub{font-size:.8rem;color:var(--text2);margin-bottom:1.5rem;font-style:italic}
+.field-label{font-size:.7rem;font-weight:700;color:var(--or);letter-spacing:1px;text-transform:uppercase;margin-bottom:.5rem;display:block}
+.inp{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:var(--r-sm);padding:13px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--or)}
+.inp::placeholder{color:var(--text3)}
+.btn{width:100%;border:none;border-radius:var(--r-sm);padding:14px;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+.btn-primary{background:var(--rouge);color:#fff}
+.btn-primary:active{background:var(--rouge-fonce);transform:scale(.98)}
+.btn-or{background:linear-gradient(135deg,var(--or),var(--or-light));color:var(--rouge-fonce)}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--or);color:var(--or)}
+.btn-green{background:var(--green);color:#fff}
+.btn-red{background:var(--red);color:#fff}
+.btn-sm{padding:8px 16px;font-size:.78rem;width:auto}
+.err{color:var(--red);font-size:.78rem;margin-top:.4rem;min-height:18px}
+.divider{height:1px;background:var(--border);margin:1.2rem 0}
+.login-footer{margin-top:1.5rem;text-align:center;font-size:.72rem;color:var(--text3)}
+
+/* ===== TOPBAR ===== */
+.topbar{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.95);border-bottom:1px solid var(--border);padding:12px 1.5rem;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(10px)}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-brand .t-logo{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--or),var(--or-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--rouge-fonce)}
+.topbar-brand .t-name{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;color:var(--or)}
+.topbar-brand .t-role{font-size:.65rem;color:var(--text3);letter-spacing:.5px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.badge-role{background:var(--rouge-bg);border:1px solid rgba(160,16,32,.3);color:#E07080;font-size:.65rem;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:100px;text-transform:uppercase}
+.btn-logout{background:transparent;border:1px solid var(--border2);color:var(--text3);border-radius:var(--r-sm);padding:6px 12px;font-size:.72rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+
+/* ===== NAV TABS ===== */
+.nav-tabs{display:flex;gap:2px;padding:12px 1rem;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r-sm);border:none;background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:500;cursor:pointer;transition:.2s;white-space:nowrap}
+.nav-tab.active{background:var(--or-bg);color:var(--or);border:1px solid rgba(200,155,42,.2)}
+.nav-tab:hover:not(.active){color:var(--text2)}
+.nav-tab .t-icon{font-size:.9rem}
+
+/* ===== CONTENT AREA ===== */
+.content{flex:1;padding:1.5rem;max-width:900px;margin:0 auto;width:100%}
+
+/* ===== CARDS ===== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.card-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
+.card-title span{color:var(--or)}
+
+/* ===== STATS GRID ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1rem}
+@media(min-width:600px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1rem;text-align:center}
+.stat-card .s-val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--or)}
+.stat-card .s-label{font-size:.7rem;color:var(--text2);margin-top:2px}
+
+/* ===== FORM GRID ===== */
+.form-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:600px){.form-grid{grid-template-columns:1fr 1fr}}
+.form-group{display:flex;flex-direction:column;gap:.4rem}
+.select{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:13px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23A09880' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;transition:border-color .2s}
+.select:focus{border-color:var(--or)}
+.select option{background:#1E1E1E}
+textarea.inp{resize:vertical;min-height:80px}
+
+/* ===== TABLE ===== */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{padding:10px 12px;text-align:left;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid rgba(37,37,37,.5);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(200,155,42,.03)}
+
+/* ===== BADGES ===== */
+.badge{display:inline-block;border-radius:100px;padding:3px 10px;font-size:.65rem;font-weight:700;letter-spacing:.5px;white-space:nowrap}
+.badge-actif{background:var(--green-bg);color:var(--green)}
+.badge-suspendu{background:var(--red-bg);color:var(--red)}
+.badge-expire{background:var(--yellow-bg);color:var(--yellow)}
+.badge-batisseur{background:rgba(200,155,42,.12);color:var(--or)}
+.badge-commando{background:rgba(231,76,60,.12);color:#E07080}
+.badge-general{background:rgba(52,152,219,.12);color:var(--blue)}
+.badge-admin{background:var(--rouge-bg);color:#E07080}
+.badge-superadmin{background:linear-gradient(135deg,rgba(200,155,42,.2),rgba(160,16,32,.2));color:var(--or-light)}
+.badge-chefgroupe{background:var(--blue-bg);color:var(--blue)}
+
+/* ===== ACTIONS ===== */
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.action-btn{padding:5px 10px;border-radius:6px;border:none;font-size:.7rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;white-space:nowrap}
+.ab-green{background:var(--green-bg);color:var(--green)}
+.ab-red{background:var(--red-bg);color:var(--red)}
+.ab-or{background:var(--or-bg);color:var(--or)}
+.ab-blue{background:var(--blue-bg);color:var(--blue)}
+.ab-gray{background:rgba(255,255,255,.05);color:var(--text2)}
+.action-btn:hover{filter:brightness(1.2)}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid rgba(200,155,42,.2);border-radius:16px;padding:1.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:fadeIn .2s ease}
+.modal h3{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:1.2rem;color:var(--or)}
+.modal-btns{display:flex;gap:10px;margin-top:1.2rem}
+.modal-btns .btn{flex:1}
+
+/* ===== PRICING ===== */
+.pricing-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:600px){.pricing-grid{grid-template-columns:1fr 1fr 1fr}}
+.price-card{background:var(--card2);border:1.5px solid var(--border);border-radius:var(--r);padding:1.25rem;text-align:center;transition:.2s}
+.price-card.featured{border-color:var(--or)}
+.price-card .pc-name{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.5rem}
+.price-card .pc-price{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--or)}
+.price-card .pc-currency{font-size:.75rem;color:var(--text2)}
+.price-inp{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px 12px;color:var(--text);font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;text-align:center;outline:none;margin-top:.5rem;transition:border-color .2s}
+.price-inp:focus{border-color:var(--or)}
+
+/* ===== WA MESSAGE ===== */
+.wa-btn{display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:var(--r-sm);padding:12px 20px;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s;width:100%;justify-content:center}
+.wa-btn:active{background:#1da851;transform:scale(.98)}
+.wa-icon{width:20px;height:20px;flex-shrink:0}
+
+/* ===== SEARCH ===== */
+.search-bar{display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap}
+.search-inp{flex:1;min-width:180px;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:10px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none;transition:.2s}
+.search-inp:focus{border-color:var(--or)}
+.filter-sel{background:var(--card2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:10px 14px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;cursor:pointer}
+.filter-sel option{background:#1E1E1E}
+
+/* ===== EMPTY STATE ===== */
+.empty{text-align:center;padding:3rem 1rem;color:var(--text3)}
+.empty .e-icon{font-size:2.5rem;margin-bottom:.8rem}
+.empty p{font-size:.85rem}
+
+/* ===== LOADING ===== */
+.loading{display:flex;align-items:center;justify-content:center;padding:2rem;gap:8px;color:var(--text2);font-size:.85rem}
+.spinner{width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--or);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== TOAST ===== */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border2);border-radius:var(--r-sm);padding:12px 20px;font-size:.85rem;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+#toast.show{opacity:1}
+#toast.success{border-color:var(--green);color:var(--green)}
+#toast.error{border-color:var(--red);color:var(--red)}
+#toast.info{border-color:var(--or);color:var(--or)}
+
+/* ===== MEMBER PORTAL ===== */
+.member-hero{background:linear-gradient(135deg,rgba(160,16,32,.15),rgba(200,155,42,.08));border:1px solid rgba(200,155,42,.2);border-radius:var(--r);padding:1.5rem;margin-bottom:1rem;text-align:center}
+.member-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--or),var(--or-light));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--rouge-fonce);margin:0 auto 1rem}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-label{font-size:.75rem;color:var(--text2)}
+.info-val{font-size:.85rem;font-weight:600}
+
+/* ===== GROUP CHAT AREA ===== */
+.msg-area{background:var(--card2);border:1px solid var(--border);border-radius:var(--r-sm);padding:1rem;min-height:120px;font-size:.82rem;color:var(--text2);line-height:1.7}
+
+/* MT helpers */
+.mt-1{margin-top:.8rem}
+.mt-2{margin-top:1.5rem}
+.flex{display:flex}.gap-1{gap:.5rem}.gap-2{gap:1rem}.flex-wrap{flex-wrap:wrap}
+.text-or{color:var(--or)}.text-red{color:var(--red)}.text-green{color:var(--green)}
+.text-muted{color:var(--text2)}.text-small{font-size:.78rem}
+.bold{font-weight:700}
+.full-width{width:100%}
+hr.gold{border:none;border-top:1px solid rgba(200,155,42,.2);margin:1rem 0}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div class="screen active" id="s-login">
+  <div class="login-box">
+    <div class="logo-mark"><div class="dot">MM</div><span>MI-MI PARTNERS</span></div>
+    <h1>MIMI <span>Business</span> Club™</h1>
+    <p class="sub">Pas de motivation, que de l'opérationnel.</p>
+    <div class="divider"></div>
+    <div class="form-group" style="margin-bottom:1rem">
+      <label class="field-label">Identifiant (Login ou Code Accès)</label>
+      <input class="inp" id="login-id" placeholder="Ex: Bouba ou MIMI-A1B2" autocomplete="off" autocorrect="off">
+    </div>
+    <div class="form-group" style="margin-bottom:.5rem">
+      <label class="field-label">Mot de Passe</label>
+      <input class="inp" id="login-pw" type="password" placeholder="Votre mot de passe">
+    </div>
+    <div class="err" id="login-err"></div>
+    <button class="btn btn-primary mt-1" id="btn-login">Accéder →</button>
+    <div class="login-footer">Plateforme réservée aux membres certifiés<br><strong style="color:var(--or)">+225 07 87 32 97 95</strong></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN SCREEN ===== -->
+<div class="screen" id="s-admin">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="t-logo">MM</div>
+      <div><div class="t-name">MIMI Club™</div><div class="t-role" id="admin-role-label">Admin</div></div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge-role" id="admin-badge">ADMIN</span>
+      <button class="btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="nav-tabs" id="admin-tabs">
+    <button class="nav-tab active" onclick="adminTab('dashboard')" data-tab="dashboard"><span class="t-icon">📊</span>Tableau de Bord</button>
+    <button class="nav-tab" onclick="adminTab('membres')" data-tab="membres"><span class="t-icon">👥</span>Membres</button>
+    <button class="nav-tab" onclick="adminTab('groupes')" data-tab="groupes"><span class="t-icon">🏘️</span>Groupes</button>
+    <button class="nav-tab" onclick="adminTab('messagerie')" data-tab="messagerie"><span class="t-icon">💬</span>Messagerie</button>
+    <button class="nav-tab" onclick="adminTab('paiements')" data-tab="paiements"><span class="t-icon">💰</span>Paiements</button>
+    <button class="nav-tab" onclick="adminTab('parametres')" data-tab="parametres"><span class="t-icon">⚙️</span>Paramètres</button>
+  </div>
+  <div class="content" id="admin-content">
+    <div class="loading"><div class="spinner"></div> Chargement...</div>
+  </div>
+</div>
+
+<!-- ===== MEMBER SCREEN ===== -->
+<div class="screen" id="s-member">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="t-logo">MM</div>
+      <div><div class="t-name">MIMI Club™</div><div class="t-role" id="member-name-label">Membre</div></div>
+    </div>
+    <div class="topbar-right">
+      <span class="badge-role" id="member-badge-label">BÂTISSEUR</span>
+      <button class="btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="memberTab('profil')" data-tab="profil"><span class="t-icon">🪪</span>Mon Profil</button>
+    <button class="nav-tab" onclick="memberTab('groupe')" data-tab="groupe"><span class="t-icon">🏘️</span>Mon Groupe</button>
+    <button class="nav-tab" onclick="memberTab('infos')" data-tab="infos"><span class="t-icon">📋</span>Infos Club</button>
+  </div>
+  <div class="content" id="member-content">
+    <div class="loading"><div class="spinner"></div> Chargement...</div>
+  </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const API_URL = 'https://script.google.com/macros/s/AKfycbz0kfOl9EUHoqRGqEzmYVSsgovVE_rHrWKxs0WTJM8m4MoeGQ1AsemYcAQzoc-OnbiV/exec';
+const WA_ADMIN = '+22507873297 95';
+
+let currentUser = null;
+let currentRole = null; // 'super_admin' | 'admin' | 'chef_groupe' | 'membre'
+let allMembers = [];
+let allAdmins = [];
+let allGroupes = [];
+let allPaiements = [];
+let params = {};
+let currentAdminTab = 'dashboard';
+
+// ============================================================
+// API HELPERS
+// ============================================================
+async function apiCall(action, sheet, extra = {}) {
+  try {
+    const body = JSON.stringify({ action, sheet, ...extra });
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      body,
+      headers: { 'Content-Type': 'text/plain' }
+    });
+    const data = await res.json();
+    return data;
+  } catch(e) {
+    return { success: false, error: e.toString() };
+  }
+}
+async function getSheet(sheet) {
+  const r = await apiCall('getAll', sheet, { sheet });
+  return r.success ? r.data : [];
+}
+async function addRow(sheet, row) {
+  return await apiCall('addRow', sheet, { sheet, row });
+}
+async function updateRow(sheet, idField, idValue, row) {
+  return await apiCall('updateRow', sheet, { sheet, idField, idValue, row });
+}
+async function deleteRow(sheet, idField, idValue) {
+  return await apiCall('deleteRow', sheet, { sheet, idField, idValue });
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function toast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  setTimeout(() => t.className = '', 3000);
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function genId(prefix) {
+  return prefix + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2,3).toUpperCase();
+}
+function genCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c = 'MIMI-';
+  for(let i=0;i<4;i++) c += chars[Math.floor(Math.random()*chars.length)];
+  return c;
+}
+function formatDate(d) {
+  if(!d) return '—';
+  const dt = new Date(d);
+  if(isNaN(dt)) return d;
+  return dt.toLocaleDateString('fr-FR');
+}
+function addMonths(months) {
+  const d = new Date();
+  d.setMonth(d.getMonth() + months);
+  return d.toISOString().split('T')[0];
+}
+function today() { return new Date().toISOString().split('T')[0]; }
+function isExpired(dateStr) {
+  if(!dateStr) return false;
+  return new Date(dateStr) < new Date();
+}
+function statusBadge(s) {
+  const m = { 'ACTIF':'badge-actif', 'SUSPENDU':'badge-suspendu', 'EXPIRE':'badge-expire' };
+  return `<span class="badge ${m[s]||'badge-expire'}">${s||'INCONNU'}</span>`;
+}
+function niveauBadge(n) {
+  const m = { 'BÂTISSEUR':'badge-batisseur','COMMANDO':'badge-commando','GÉNÉRAL':'badge-general' };
+  return `<span class="badge ${m[n]||'badge-batisseur'}">${n||'—'}</span>`;
+}
+function roleBadge(r) {
+  const m = { 'SUPER_ADMIN':'badge-superadmin','ADMIN':'badge-admin','CHEF_GROUPE':'badge-chefgroupe' };
+  return `<span class="badge ${m[r]||'badge-admin'}">${r||'—'}</span>`;
+}
+function initials(name) {
+  if(!name) return 'MM';
+  const parts = name.trim().split(' ');
+  return (parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
+}
+function openModal() { document.getElementById('modal-overlay').classList.add('open'); }
+function closeModal(e) {
+  if(!e || e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+document.getElementById('btn-login').addEventListener('click', handleLogin);
+document.getElementById('login-pw').addEventListener('keydown', e => { if(e.key==='Enter') handleLogin(); });
+document.getElementById('login-id').addEventListener('keydown', e => { if(e.key==='Enter') handleLogin(); });
+
+async function handleLogin() {
+  const id = document.getElementById('login-id').value.trim().toUpperCase();
+  const pw = document.getElementById('login-pw').value.trim();
+  const err = document.getElementById('login-err');
+  err.textContent = '';
+  if(!id || !pw) { err.textContent = '⚠️ Renseignez votre identifiant et mot de passe.'; return; }
+
+  const btn = document.getElementById('btn-login');
+  btn.textContent = 'Connexion...';
+  btn.disabled = true;
+
+  // Load data
+  allAdmins = await getSheet('ADMINS');
+  allMembers = await getSheet('MEMBRES');
+
+  // Check admin
+  const admin = allAdmins.find(a =>
+    (a.NOM.toUpperCase().includes(id) || a.ID.toUpperCase() === id) &&
+    a.MOT_DE_PASSE === pw && a.STATUT === 'ACTIF'
+  );
+  if(admin) {
+    currentUser = admin;
+    currentRole = admin.ROLE === 'SUPER_ADMIN' ? 'super_admin' : admin.ROLE === 'CHEF_GROUPE' ? 'chef_groupe' : 'admin';
+    await loadAdminScreen();
+    btn.textContent = 'Accéder →'; btn.disabled = false;
+    return;
+  }
+
+  // Check member by code
+  const member = allMembers.find(m => m.CODE_ACCES === id && m.STATUT !== 'SUSPENDU');
+  if(member) {
+    // For members, password = last 4 digits of phone or CODE_ACCES itself
+    const pwOk = pw === member.TELEPHONE.replace(/\s/g,'').slice(-4) ||
+                 pw === member.CODE_ACCES ||
+                 pw === member.NOM_COMPLET.split(' ')[0].toUpperCase();
+    if(pwOk) {
+      if(member.STATUT === 'EXPIRE' || isExpired(member.DATE_EXPIRATION)) {
+        err.textContent = '⏳ Votre accès a expiré. Contactez l\'administrateur pour renouveler.';
+        btn.textContent = 'Accéder →'; btn.disabled = false;
+        return;
+      }
+      currentUser = member;
+      currentRole = 'membre';
+      await loadMemberScreen();
+      btn.textContent = 'Accéder →'; btn.disabled = false;
+      return;
+    }
+  }
+
+  err.textContent = '❌ Identifiant ou mot de passe incorrect.';
+  btn.textContent = 'Accéder →'; btn.disabled = false;
+}
+
+function logout() {
+  currentUser = null; currentRole = null;
+  allMembers = []; allAdmins = []; allGroupes = []; allPaiements = [];
+  document.getElementById('login-id').value = '';
+  document.getElementById('login-pw').value = '';
+  document.getElementById('login-err').textContent = '';
+  showScreen('s-login');
+}
+
+// ============================================================
+// ADMIN SCREEN
+// ============================================================
+async function loadAdminScreen() {
+  document.getElementById('admin-role-label').textContent = currentUser.NOM;
+  document.getElementById('admin-badge').textContent = currentUser.ROLE.replace('_',' ');
+  showScreen('s-admin');
+  // Load all data
+  allGroupes = await getSheet('GROUPES');
+  allPaiements = await getSheet('PAIEMENTS');
+  const rawParams = await getSheet('PARAMETRES');
+  rawParams.forEach(r => { if(r.PRIX_BATISSEUR !== undefined) {
+    params.PRIX_BATISSEUR = r.PRIX_BATISSEUR;
+    params.PRIX_COMMANDO = r.PRIX_COMMANDO;
+    params.PRIX_GENERAL = r.PRIX_GENERAL;
+    params.TELEPHONE_ADMIN = r.TELEPHONE_ADMIN;
+    params.NOM_CLUB = r.NOM_CLUB;
+    params.DEVISE = r.DEVISE;
+  }});
+  adminTab('dashboard');
+}
+
+function adminTab(tab) {
+  currentAdminTab = tab;
+  document.querySelectorAll('#admin-tabs .nav-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  const content = document.getElementById('admin-content');
+  content.innerHTML = '';
+  if(tab === 'dashboard') renderDashboard(content);
+  else if(tab === 'membres') renderMembres(content);
+  else if(tab === 'groupes') renderGroupes(content);
+  else if(tab === 'messagerie') renderMessagerie(content);
+  else if(tab === 'paiements') renderPaiements(content);
+  else if(tab === 'parametres') renderParametres(content);
+}
+
+// ---- DASHBOARD ----
+function renderDashboard(el) {
+  const actifs = allMembers.filter(m => m.STATUT === 'ACTIF').length;
+  const suspendus = allMembers.filter(m => m.STATUT === 'SUSPENDU').length;
+  const expires = allMembers.filter(m => m.STATUT === 'EXPIRE' || isExpired(m.DATE_EXPIRATION)).length;
+  const total = allMembers.length;
+  const batisseurs = allMembers.filter(m => m.NIVEAU === 'BÂTISSEUR').length;
+  const commandos = allMembers.filter(m => m.NIVEAU === 'COMMANDO').length;
+  const generaux = allMembers.filter(m => m.NIVEAU === 'GÉNÉRAL').length;
+  const mrr = batisseurs*(params.PRIX_BATISSEUR||15000) + commandos*(params.PRIX_COMMANDO||35000) + generaux*(params.PRIX_GENERAL||75000);
+
+  el.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="s-val text-or">${total}</div><div class="s-label">Total Membres</div></div>
+      <div class="stat-card"><div class="s-val text-green">${actifs}</div><div class="s-label">Actifs</div></div>
+      <div class="stat-card"><div class="s-val text-red">${suspendus}</div><div class="s-label">Suspendus</div></div>
+      <div class="stat-card"><div class="s-val" style="color:var(--yellow)">${expires}</div><div class="s-label">Expirés</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Revenus Mensuels <span>Estimés</span></div></div>
+      <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--or);margin-bottom:.5rem">
+        ${mrr.toLocaleString('fr-FR')} <span style="font-size:.9rem;color:var(--text2)">${params.DEVISE||'FCFA'}</span>
+      </div>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;font-size:.78rem;color:var(--text2)">
+        <span>🧱 Bâtisseurs: <strong style="color:var(--or)">${batisseurs}</strong></span>
+        <span>⚔️ Commandos: <strong style="color:var(--or)">${commandos}</strong></span>
+        <span>🎖️ Généraux: <strong style="color:var(--or)">${generaux}</strong></span>
+        <span>🏘️ Groupes: <strong style="color:var(--or)">${allGroupes.length}</strong></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Membres <span>Récents</span></div>
+        <button class="btn btn-primary btn-sm" onclick="adminTab('membres')">Voir tout →</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nom</th><th>Niveau</th><th>Statut</th><th>Inscription</th></tr></thead>
+          <tbody>
+            ${allMembers.slice(-5).reverse().map(m => `
+              <tr>
+                <td><strong>${m.NOM_COMPLET}</strong><br><span class="text-small text-muted">${m.ENTREPRISE||'—'}</span></td>
+                <td>${niveauBadge(m.NIVEAU)}</td>
+                <td>${statusBadge(m.STATUT)}</td>
+                <td class="text-small text-muted">${formatDate(m.DATE_INSCRIPTION)}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ---- MEMBRES ----
+function renderMembres(el) {
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Gestion des <span>Membres</span></div>
+        <button class="btn btn-primary btn-sm" onclick="openAddMember()">+ Ajouter</button>
+      </div>
+      <div class="search-bar">
+        <input class="search-inp" id="search-membres" placeholder="Rechercher par nom, entreprise, code..." oninput="filterMembres()">
+        <select class="filter-sel" id="filter-statut" onchange="filterMembres()">
+          <option value="">Tous statuts</option>
+          <option value="ACTIF">Actifs</option>
+          <option value="SUSPENDU">Suspendus</option>
+          <option value="EXPIRE">Expirés</option>
+        </select>
+        <select class="filter-sel" id="filter-niveau" onchange="filterMembres()">
+          <option value="">Tous niveaux</option>
+          <option value="BÂTISSEUR">Bâtisseur</option>
+          <option value="COMMANDO">Commando</option>
+          <option value="GÉNÉRAL">Général</option>
+        </select>
+      </div>
+      <div id="membres-table" class="table-wrap"></div>
+    </div>
+  `;
+  filterMembres();
+}
+
+function filterMembres() {
+  const q = (document.getElementById('search-membres')?.value||'').toLowerCase();
+  const st = document.getElementById('filter-statut')?.value||'';
+  const nv = document.getElementById('filter-niveau')?.value||'';
+  let list = allMembers.filter(m => {
+    const match = !q || m.NOM_COMPLET?.toLowerCase().includes(q) || m.ENTREPRISE?.toLowerCase().includes(q) || m.CODE_ACCES?.toLowerCase().includes(q) || m.TELEPHONE?.includes(q);
+    const statOk = !st || m.STATUT === st;
+    const nivOk = !nv || m.NIVEAU === nv;
+    return match && statOk && nivOk;
+  });
+  const el = document.getElementById('membres-table');
+  if(!el) return;
+  if(list.length === 0) { el.innerHTML = `<div class="empty"><div class="e-icon">👤</div><p>Aucun membre trouvé</p></div>`; return; }
+  el.innerHTML = `<table>
+    <thead><tr><th>Membre</th><th>Niveau</th><th>Code</th><th>Statut</th><th>Expiration</th><th>Actions</th></tr></thead>
+    <tbody>${list.map(m => `
+      <tr>
+        <td>
+          <strong>${m.NOM_COMPLET||'—'}</strong><br>
+          <span class="text-small text-muted">${m.ENTREPRISE||'—'} · ${m.SECTEUR||'—'}</span><br>
+          <span class="text-small" style="color:var(--or)">${m.TELEPHONE||'—'}</span>
+        </td>
+        <td>${niveauBadge(m.NIVEAU)}</td>
+        <td><code style="background:var(--card2);padding:2px 6px;border-radius:4px;font-size:.72rem;color:var(--or)">${m.CODE_ACCES||'—'}</code></td>
+        <td>${statusBadge(m.STATUT)}</td>
+        <td class="text-small text-muted">${formatDate(m.DATE_EXPIRATION)}</td>
+        <td>
+          <div class="actions">
+            <button class="action-btn ab-green" onclick="activerMembre('${m.ID}')">✓ Activer</button>
+            <button class="action-btn ab-red" onclick="suspendreMembre('${m.ID}')">⊘ Suspendre</button>
+            <button class="action-btn ab-or" onclick="prolongerMembre('${m.ID}')">+ 1 Mois</button>
+            <button class="action-btn ab-blue" onclick="openEditMember('${m.ID}')">✎ Éditer</button>
+            <button class="action-btn ab-gray" onclick="waDirectMembre('${m.ID}')">📲 WA</button>
+          </div>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+async function activerMembre(id) {
+  const exp = addMonths(1);
+  await updateRow('MEMBRES','ID',id,{STATUT:'ACTIF',DATE_EXPIRATION:exp});
+  allMembers = await getSheet('MEMBRES');
+  filterMembres();
+  toast('✅ Membre activé — accès valide 1 mois','success');
+}
+async function suspendreMembre(id) {
+  await updateRow('MEMBRES','ID',id,{STATUT:'SUSPENDU',DATE_SUSPENSION:today()});
+  allMembers = await getSheet('MEMBRES');
+  filterMembres();
+  toast('⊘ Membre suspendu','error');
+}
+async function prolongerMembre(id) {
+  const m = allMembers.find(x=>x.ID===id);
+  const base = m?.DATE_EXPIRATION && !isExpired(m.DATE_EXPIRATION) ? new Date(m.DATE_EXPIRATION) : new Date();
+  base.setMonth(base.getMonth()+1);
+  const newExp = base.toISOString().split('T')[0];
+  await updateRow('MEMBRES','ID',id,{STATUT:'ACTIF',DATE_EXPIRATION:newExp});
+  allMembers = await getSheet('MEMBRES');
+  filterMembres();
+  toast('✅ Accès prolongé d\'1 mois','success');
+}
+function waDirectMembre(id) {
+  const m = allMembers.find(x=>x.ID===id);
+  if(!m?.TELEPHONE) { toast('Numéro introuvable','error'); return; }
+  const phone = m.TELEPHONE.replace(/[\s\+\-]/g,'');
+  const msg = encodeURIComponent(`Bonjour ${m.NOM_COMPLET} 👋\nVous contactez *${params.NOM_CLUB||'MIMI Business Club'}*.\n\n_Pas de motivation, que de l'opérationnel._`);
+  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${msg}`,'_blank');
+}
+
+function openAddMember() {
+  const secteurs = ['Agro-transformation','Commerce / Boutique','Commerce en Ligne','Restauration / Maquis','Transport / Livraison','Élevage / Aviculture','Prestation de Services','Beauté / Coiffure','BTP / Artisanat','Pharmacie / Santé','Formation / Éducation','Immobilier / Location','Couture / Textile','Tech / Informatique','Agriculture / Maraîchage'];
+  document.getElementById('modal-content').innerHTML = `
+    <h3>➕ Nouveau Membre</h3>
+    <div class="form-grid">
+      <div class="form-group"><label class="field-label">Nom Complet *</label><input class="inp" id="m-nom" placeholder="Prénom Nom"></div>
+      <div class="form-group"><label class="field-label">Entreprise</label><input class="inp" id="m-ent" placeholder="Nom de l'affaire"></div>
+      <div class="form-group"><label class="field-label">Secteur</label>
+        <select class="select" id="m-sec">${secteurs.map(s=>`<option>${s}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="field-label">Téléphone WhatsApp *</label><input class="inp" id="m-tel" placeholder="+225 07 00 00 00"></div>
+      <div class="form-group"><label class="field-label">Email</label><input class="inp" id="m-email" placeholder="email@exemple.com" type="email"></div>
+      <div class="form-group"><label class="field-label">Niveau *</label>
+        <select class="select" id="m-niv"><option>BÂTISSEUR</option><option>COMMANDO</option><option>GÉNÉRAL</option></select></div>
+      <div class="form-group"><label class="field-label">Code d'Accès</label>
+        <input class="inp" id="m-code" placeholder="Auto-généré" value="${genCode()}"></div>
+      <div class="form-group"><label class="field-label">Mot de Passe (défaut: 4 derniers chiffres tél)</label>
+        <input class="inp" id="m-pw" placeholder="Laisser vide = 4 derniers chiffres tél"></div>
+      <div class="form-group" style="grid-column:1/-1"><label class="field-label">Notes</label>
+        <textarea class="inp" id="m-notes" placeholder="Notes internes..."></textarea></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-or" onclick="saveMember()">Enregistrer →</button>
+    </div>
+  `;
+  openModal();
+}
+
+async function saveMember() {
+  const nom = document.getElementById('m-nom').value.trim();
+  const tel = document.getElementById('m-tel').value.trim();
+  if(!nom||!tel) { toast('Nom et téléphone obligatoires','error'); return; }
+  const code = document.getElementById('m-code').value.trim() || genCode();
+  const row = {
+    ID: genId('MBR'),
+    NOM_COMPLET: nom,
+    ENTREPRISE: document.getElementById('m-ent').value.trim(),
+    SECTEUR: document.getElementById('m-sec').value,
+    TELEPHONE: tel,
+    CODE_ACCES: code,
+    NIVEAU: document.getElementById('m-niv').value,
+    STATUT: 'ACTIF',
+    DATE_INSCRIPTION: today(),
+    DATE_EXPIRATION: addMonths(1),
+    GROUPE_ID: '',
+    MONTANT_PAYE: '',
+    EMAIL: document.getElementById('m-email').value.trim(),
+    NOTES: document.getElementById('m-notes').value.trim(),
+    DATE_SUSPENSION: ''
+  };
+  const r = await addRow('MEMBRES', row);
+  if(r.success) {
+    allMembers = await getSheet('MEMBRES');
+    closeModal();
+    filterMembres();
+    toast(`✅ Membre ajouté — Code: ${code}`,'success');
+  } else { toast('Erreur lors de l\'enregistrement','error'); }
+}
+
+function openEditMember(id) {
+  const m = allMembers.find(x=>x.ID===id);
+  if(!m) return;
+  document.getElementById('modal-content').innerHTML = `
+    <h3>✎ Modifier le Membre</h3>
+    <div class="form-grid">
+      <div class="form-group"><label class="field-label">Nom Complet</label><input class="inp" id="em-nom" value="${m.NOM_COMPLET||''}"></div>
+      <div class="form-group"><label class="field-label">Entreprise</label><input class="inp" id="em-ent" value="${m.ENTREPRISE||''}"></div>
+      <div class="form-group"><label class="field-label">Téléphone</label><input class="inp" id="em-tel" value="${m.TELEPHONE||''}"></div>
+      <div class="form-group"><label class="field-label">Niveau</label>
+        <select class="select" id="em-niv">
+          <option ${m.NIVEAU==='BÂTISSEUR'?'selected':''}>BÂTISSEUR</option>
+          <option ${m.NIVEAU==='COMMANDO'?'selected':''}>COMMANDO</option>
+          <option ${m.NIVEAU==='GÉNÉRAL'?'selected':''}>GÉNÉRAL</option>
+        </select></div>
+      <div class="form-group"><label class="field-label">Statut</label>
+        <select class="select" id="em-stat">
+          <option ${m.STATUT==='ACTIF'?'selected':''}>ACTIF</option>
+          <option ${m.STATUT==='SUSPENDU'?'selected':''}>SUSPENDU</option>
+          <option ${m.STATUT==='EXPIRE'?'selected':''}>EXPIRE</option>
+        </select></div>
+      <div class="form-group"><label class="field-label">Date Expiration</label><input class="inp" id="em-exp" type="date" value="${m.DATE_EXPIRATION||''}"></div>
+      <div class="form-group" style="grid-column:1/-1"><label class="field-label">Notes</label>
+        <textarea class="inp" id="em-notes">${m.NOTES||''}</textarea></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-or" onclick="saveEditMember('${id}')">Sauvegarder →</button>
+    </div>
+  `;
+  openModal();
+}
+
+async function saveEditMember(id) {
+  const row = {
+    NOM_COMPLET: document.getElementById('em-nom').value.trim(),
+    ENTREPRISE: document.getElementById('em-ent').value.trim(),
+    TELEPHONE: document.getElementById('em-tel').value.trim(),
+    NIVEAU: document.getElementById('em-niv').value,
+    STATUT: document.getElementById('em-stat').value,
+    DATE_EXPIRATION: document.getElementById('em-exp').value,
+    NOTES: document.getElementById('em-notes').value.trim()
+  };
+  const r = await updateRow('MEMBRES','ID',id,row);
+  if(r.success) {
+    allMembers = await getSheet('MEMBRES');
+    closeModal(); filterMembres();
+    toast('✅ Membre mis à jour','success');
+  } else { toast('Erreur de mise à jour','error'); }
+}
+
+// ---- GROUPES ----
+function renderGroupes(el) {
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Gestion des <span>Groupes</span></div>
+        <button class="btn btn-primary btn-sm" onclick="openAddGroupe()">+ Créer un groupe</button>
+      </div>
+      <div id="groupes-list"></div>
+    </div>
+  `;
+  renderGroupesList();
+}
+
+function renderGroupesList() {
+  const el = document.getElementById('groupes-list');
+  if(!el) return;
+  if(allGroupes.length === 0) {
+    el.innerHTML = `<div class="empty"><div class="e-icon">🏘️</div><p>Aucun groupe créé</p></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr><th>Groupe</th><th>Chef</th><th>Membres</th><th>Statut</th><th>Actions</th></tr></thead>
+    <tbody>${allGroupes.map(g => {
+      const chef = allMembers.find(m=>m.ID===g.CHEF_ID);
+      const nbMembres = allMembers.filter(m=>m.GROUPE_ID===g.GROUPE_ID).length;
+      return `<tr>
+        <td><strong>${g.NOM_GROUPE||'—'}</strong><br><span class="text-small text-muted">${g.DESCRIPTION||'—'}</span></td>
+        <td>${chef ? chef.NOM_COMPLET : '—'}</td>
+        <td><span style="color:var(--or);font-weight:700">${nbMembres}</span></td>
+        <td>${statusBadge(g.STATUT||'ACTIF')}</td>
+        <td><div class="actions">
+          <button class="action-btn ab-blue" onclick="openManageGroupe('${g.GROUPE_ID}')">👥 Gérer</button>
+          <button class="action-btn ab-gray" onclick="waGroupe('${g.GROUPE_ID}')">📲 WA Groupe</button>
+        </div></td>
+      </tr>`;
+    }).join('')}
+    </tbody></table></div>`;
+}
+
+function openAddGroupe() {
+  const chefs = allMembers.filter(m=>m.STATUT==='ACTIF');
+  document.getElementById('modal-content').innerHTML = `
+    <h3>🏘️ Nouveau Groupe</h3>
+    <div class="form-grid">
+      <div class="form-group"><label class="field-label">Nom du Groupe *</label><input class="inp" id="g-nom" placeholder="Ex: Groupe Abidjan Sud"></div>
+      <div class="form-group"><label class="field-label">Chef de Groupe</label>
+        <select class="select" id="g-chef">
+          <option value="">— Sélectionner —</option>
+          ${chefs.map(m=>`<option value="${m.ID}">${m.NOM_COMPLET} (${m.NIVEAU})</option>`).join('')}
+        </select></div>
+      <div class="form-group" style="grid-column:1/-1"><label class="field-label">Description</label>
+        <textarea class="inp" id="g-desc" placeholder="Description du groupe..."></textarea></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-or" onclick="saveGroupe()">Créer →</button>
+    </div>
+  `;
+  openModal();
+}
+
+async function saveGroupe() {
+  const nom = document.getElementById('g-nom').value.trim();
+  if(!nom) { toast('Nom du groupe obligatoire','error'); return; }
+  const chefId = document.getElementById('g-chef').value;
+  const row = {
+    GROUPE_ID: genId('GRP'),
+    NOM_GROUPE: nom,
+    CHEF_ID: chefId,
+    DESCRIPTION: document.getElementById('g-desc').value.trim(),
+    DATE_CREATION: today(),
+    STATUT: 'ACTIF'
+  };
+  // Promote chef if selected
+  if(chefId) {
+    await updateRow('MEMBRES','ID',chefId,{ GROUPE_ID: row.GROUPE_ID });
+  }
+  const r = await addRow('GROUPES', row);
+  if(r.success) {
+    allGroupes = await getSheet('GROUPES');
+    allMembers = await getSheet('MEMBRES');
+    closeModal(); renderGroupesList();
+    toast('✅ Groupe créé','success');
+  } else { toast('Erreur création groupe','error'); }
+}
+
+function openManageGroupe(groupeId) {
+  const g = allGroupes.find(x=>x.GROUPE_ID===groupeId);
+  if(!g) return;
+  const membres = allMembers.filter(m=>m.GROUPE_ID===groupeId);
+  const nonMembres = allMembers.filter(m=>m.STATUT==='ACTIF'&&m.GROUPE_ID!==groupeId);
+  document.getElementById('modal-content').innerHTML = `
+    <h3>👥 ${g.NOM_GROUPE}</h3>
+    <p class="text-muted text-small" style="margin-bottom:1rem">${membres.length} membre(s) dans ce groupe</p>
+    <div style="margin-bottom:1rem">
+      <label class="field-label">Ajouter un membre au groupe</label>
+      <div class="flex gap-1 mt-1">
+        <select class="select" id="add-to-group" style="flex:1">
+          <option value="">— Sélectionner —</option>
+          ${nonMembres.map(m=>`<option value="${m.ID}">${m.NOM_COMPLET}</option>`).join('')}
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="addToGroupe('${groupeId}')">Ajouter</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Membre</th><th>Niveau</th><th>Action</th></tr></thead>
+      <tbody>${membres.map(m=>`<tr>
+        <td><strong>${m.NOM_COMPLET}</strong><br><span class="text-small text-muted">${m.TELEPHONE}</span></td>
+        <td>${niveauBadge(m.NIVEAU)}</td>
+        <td><button class="action-btn ab-red" onclick="removeFromGroupe('${m.ID}','${groupeId}')">Retirer</button></td>
+      </tr>`).join('')}
+      </tbody></table>
+    </div>
+    <div class="modal-btns"><button class="btn btn-ghost" onclick="closeModal()">Fermer</button></div>
+  `;
+  openModal();
+}
+
+async function addToGroupe(groupeId) {
+  const memberId = document.getElementById('add-to-group').value;
+  if(!memberId) return;
+  await updateRow('MEMBRES','ID',memberId,{GROUPE_ID:groupeId});
+  allMembers = await getSheet('MEMBRES');
+  openManageGroupe(groupeId);
+  toast('✅ Membre ajouté au groupe','success');
+}
+async function removeFromGroupe(memberId, groupeId) {
+  await updateRow('MEMBRES','ID',memberId,{GROUPE_ID:''});
+  allMembers = await getSheet('MEMBRES');
+  openManageGroupe(groupeId);
+  toast('Membre retiré du groupe','info');
+}
+
+function waGroupe(groupeId) {
+  const membres = allMembers.filter(m=>m.GROUPE_ID===groupeId&&m.STATUT==='ACTIF');
+  if(membres.length===0){toast('Aucun membre actif dans ce groupe','error');return;}
+  const g = allGroupes.find(x=>x.GROUPE_ID===groupeId);
+  document.getElementById('modal-content').innerHTML = `
+    <h3>📲 Message WhatsApp — ${g?.NOM_GROUPE||'Groupe'}</h3>
+    <p class="text-muted text-small" style="margin-bottom:1rem">${membres.length} membre(s) · Les liens s'ouvrent un par un</p>
+    <div class="form-group"><label class="field-label">Votre Message</label>
+      <textarea class="inp" id="wa-msg-grp" rows="5" placeholder="Tapez votre message ici..."></textarea></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="wa-btn" onclick="sendWaGroupe('${groupeId}')" style="flex:2">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Envoyer au groupe (${membres.length})
+      </button>
+    </div>
+  `;
+  openModal();
+}
+
+let waQueue = [];
+let waIndex = 0;
+function sendWaGroupe(groupeId) {
+  const msg = document.getElementById('wa-msg-grp')?.value?.trim();
+  if(!msg){toast('Message vide','error');return;}
+  const membres = allMembers.filter(m=>m.GROUPE_ID===groupeId&&m.STATUT==='ACTIF');
+  waQueue = membres; waIndex = 0;
+  closeModal();
+  sendNextWa(msg);
+}
+function sendNextWa(msg) {
+  if(waIndex >= waQueue.length) { toast(`✅ Messages envoyés à ${waQueue.length} membres`,'success'); return; }
+  const m = waQueue[waIndex];
+  const phone = m.TELEPHONE.replace(/[\s\+\-]/g,'');
+  const fullMsg = encodeURIComponent(`*${params.NOM_CLUB||'MIMI Business Club'}*\n\nBonjour ${m.NOM_COMPLET} 👋\n\n${msg}\n\n_Pas de motivation, que de l'opérationnel._`);
+  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${fullMsg}`,'_blank');
+  waIndex++;
+  setTimeout(()=>sendNextWa(msg), 1500);
+}
+
+// ---- MESSAGERIE ----
+function renderMessagerie(el) {
+  const actifs = allMembers.filter(m=>m.STATUT==='ACTIF');
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-header"><div class="card-title">📲 Messagerie <span>WhatsApp</span></div></div>
+
+      <div style="margin-bottom:1.5rem">
+        <h4 style="margin-bottom:.8rem;font-size:.9rem;color:var(--or)">Message Groupé — Tous les membres actifs (${actifs.length})</h4>
+        <textarea class="inp" id="wa-all-msg" rows="4" placeholder="Votre message pour tous les membres actifs..."></textarea>
+        <div class="flex gap-1 mt-1">
+          <select class="filter-sel" id="wa-filter-niveau">
+            <option value="">Tous niveaux</option>
+            <option value="BÂTISSEUR">Bâtisseurs uniquement</option>
+            <option value="COMMANDO">Commandos uniquement</option>
+            <option value="GÉNÉRAL">Généraux uniquement</option>
+          </select>
+          <button class="wa-btn" onclick="sendWaAll()" style="flex:1">
+            <svg class="wa-icon" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Envoyer à tous
+          </button>
+        </div>
+      </div>
+
+      <hr class="gold">
+
+      <div>
+        <h4 style="margin-bottom:.8rem;font-size:.9rem;color:var(--or)">Message Individuel</h4>
+        <div class="flex gap-1 flex-wrap">
+          <select class="select" id="wa-single-member" style="flex:1;min-width:180px">
+            <option value="">— Sélectionner un membre —</option>
+            ${actifs.map(m=>`<option value="${m.ID}">${m.NOM_COMPLET} (${m.NIVEAU})</option>`).join('')}
+          </select>
+        </div>
+        <textarea class="inp mt-1" id="wa-single-msg" rows="3" placeholder="Votre message personnalisé..."></textarea>
+        <button class="wa-btn mt-1" onclick="sendWaSingle()">
+          <svg class="wa-icon" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          Envoyer à ce membre
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">⚠️ Rappels <span>Paiement</span></div></div>
+      <p class="text-muted text-small" style="margin-bottom:1rem">Envoie automatiquement un rappel WhatsApp aux membres expirés ou dont l'accès expire dans moins de 5 jours.</p>
+      <button class="btn btn-primary" onclick="sendRappelsPaiement()">📲 Envoyer les rappels de paiement</button>
+    </div>
+  `;
+}
+
+function sendWaAll() {
+  const msg = document.getElementById('wa-all-msg')?.value?.trim();
+  const nv = document.getElementById('wa-filter-niveau')?.value;
+  if(!msg){toast('Message vide','error');return;}
+  let liste = allMembers.filter(m=>m.STATUT==='ACTIF');
+  if(nv) liste = liste.filter(m=>m.NIVEAU===nv);
+  if(liste.length===0){toast('Aucun membre correspondant','error');return;}
+  waQueue = liste; waIndex = 0;
+  sendNextWa(msg);
+}
+function sendWaSingle() {
+  const id = document.getElementById('wa-single-member')?.value;
+  const msg = document.getElementById('wa-single-msg')?.value?.trim();
+  if(!id||!msg){toast('Sélectionnez un membre et tapez un message','error');return;}
+  const m = allMembers.find(x=>x.ID===id);
+  if(!m){toast('Membre introuvable','error');return;}
+  const phone = m.TELEPHONE.replace(/[\s\+\-]/g,'');
+  const fullMsg = encodeURIComponent(`*${params.NOM_CLUB||'MIMI Business Club'}*\n\nBonjour ${m.NOM_COMPLET} 👋\n\n${msg}\n\n_Pas de motivation, que de l'opérationnel._`);
+  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${fullMsg}`,'_blank');
+}
+function sendRappelsPaiement() {
+  const expiring = allMembers.filter(m => {
+    if(m.STATUT==='SUSPENDU') return false;
+    if(!m.DATE_EXPIRATION) return false;
+    const exp = new Date(m.DATE_EXPIRATION);
+    const diff = (exp - new Date()) / (1000*60*60*24);
+    return diff <= 5;
+  });
+  if(expiring.length===0){toast('Aucun membre expiré ou proche de l\'expiration','info');return;}
+  waQueue = expiring; waIndex = 0;
+  const rappelMsg = `⚠️ *Rappel d'abonnement*\n\nVotre accès au *${params.NOM_CLUB||'MIMI Business Club'}* expire bientôt ou a expiré.\n\nPour maintenir votre accès, veuillez procéder au renouvellement dès aujourd'hui.\n\n📞 Contact: ${params.TELEPHONE_ADMIN||WA_ADMIN}\n\n_Pas de motivation, que de l'opérationnel._`;
+  sendNextWaRappel(rappelMsg);
+  toast(`📲 Envoi des rappels à ${expiring.length} membres...`,'info');
+}
+function sendNextWaRappel(msg) {
+  if(waIndex >= waQueue.length) { toast(`✅ ${waQueue.length} rappels envoyés`,'success'); return; }
+  const m = waQueue[waIndex];
+  const phone = m.TELEPHONE.replace(/[\s\+\-]/g,'');
+  const fullMsg = encodeURIComponent(`Bonjour ${m.NOM_COMPLET} 👋\n\n${msg}`);
+  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${fullMsg}`,'_blank');
+  waIndex++;
+  setTimeout(()=>sendNextWaRappel(msg),1500);
+}
+
+// ---- PAIEMENTS ----
+function renderPaiements(el) {
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">💰 Suivi des <span>Paiements</span></div>
+        <button class="btn btn-primary btn-sm" onclick="openAddPaiement()">+ Enregistrer</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Membre</th><th>Montant</th><th>Mois</th><th>Date</th><th>Statut</th><th>Notes</th></tr></thead>
+          <tbody>
+            ${allPaiements.length===0 ? `<tr><td colspan="6"><div class="empty"><div class="e-icon">💳</div><p>Aucun paiement enregistré</p></div></td></tr>` :
+            allPaiements.slice().reverse().map(p => {
+              const m = allMembers.find(x=>x.ID===p.MEMBRE_ID);
+              return `<tr>
+                <td><strong>${m?m.NOM_COMPLET:'—'}</strong></td>
+                <td style="color:var(--green);font-weight:700">${Number(p.MONTANT||0).toLocaleString('fr-FR')} ${params.DEVISE||'FCFA'}</td>
+                <td>${p.MOIS_CONCERNE||'—'}</td>
+                <td class="text-small text-muted">${formatDate(p.DATE_PAIEMENT)}</td>
+                <td><span class="badge badge-actif">${p.STATUT||'REÇU'}</span></td>
+                <td class="text-small text-muted">${p.NOTES||'—'}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function openAddPaiement() {
+  document.getElementById('modal-content').innerHTML = `
+    <h3>💰 Enregistrer un Paiement</h3>
+    <div class="form-grid">
+      <div class="form-group"><label class="field-label">Membre *</label>
+        <select class="select" id="p-membre">
+          <option value="">— Sélectionner —</option>
+          ${allMembers.map(m=>`<option value="${m.ID}">${m.NOM_COMPLET} (${m.NIVEAU})</option>`).join('')}
+        </select></div>
+      <div class="form-group"><label class="field-label">Montant (${params.DEVISE||'FCFA'}) *</label>
+        <input class="inp" id="p-montant" type="number" placeholder="Ex: 35000"></div>
+      <div class="form-group"><label class="field-label">Mois Concerné</label>
+        <input class="inp" id="p-mois" placeholder="Ex: Janvier 2025"></div>
+      <div class="form-group"><label class="field-label">Date de Paiement</label>
+        <input class="inp" id="p-date" type="date" value="${today()}"></div>
+      <div class="form-group" style="grid-column:1/-1"><label class="field-label">Notes</label>
+        <input class="inp" id="p-notes" placeholder="Mobile Money, espèces..."></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-green" onclick="savePaiement()">✅ Enregistrer</button>
+    </div>
+  `;
+  openModal();
+}
+
+async function savePaiement() {
+  const membreId = document.getElementById('p-membre').value;
+  const montant = document.getElementById('p-montant').value;
+  if(!membreId||!montant){toast('Membre et montant obligatoires','error');return;}
+  const row = {
+    PAIEMENT_ID: genId('PAY'),
+    MEMBRE_ID: membreId,
+    MONTANT: montant,
+    DATE_PAIEMENT: document.getElementById('p-date').value || today(),
+    MOIS_CONCERNE: document.getElementById('p-mois').value,
+    STATUT: 'REÇU',
+    NOTES: document.getElementById('p-notes').value
+  };
+  // Auto-activer et prolonger le membre
+  await updateRow('MEMBRES','ID',membreId,{STATUT:'ACTIF',DATE_EXPIRATION:addMonths(1),MONTANT_PAYE:montant});
+  const r = await addRow('PAIEMENTS', row);
+  if(r.success) {
+    allPaiements = await getSheet('PAIEMENTS');
+    allMembers = await getSheet('MEMBRES');
+    closeModal(); renderPaiements(document.getElementById('admin-content'));
+    toast('✅ Paiement enregistré — membre activé 1 mois','success');
+  } else { toast('Erreur enregistrement','error'); }
+}
+
+// ---- PARAMÈTRES ----
+function renderParametres(el) {
+  const isSuperAdmin = currentUser?.ROLE === 'SUPER_ADMIN';
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-header"><div class="card-title">💰 Tarifs des <span>Formules</span></div></div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="p-tier">NIVEAU 1</div>
+          <div class="pc-name">🧱 Bâtisseur</div>
+          <div class="pc-price" id="disp-bat">${Number(params.PRIX_BATISSEUR||15000).toLocaleString('fr-FR')}</div>
+          <div class="pc-currency">${params.DEVISE||'FCFA'} / mois</div>
+          ${isSuperAdmin?`<input class="price-inp" id="inp-bat" type="number" value="${params.PRIX_BATISSEUR||15000}">`:``}
+        </div>
+        <div class="price-card featured">
+          <div class="p-tier">NIVEAU 2</div>
+          <div class="pc-name">⚔️ Commando</div>
+          <div class="pc-price" id="disp-com">${Number(params.PRIX_COMMANDO||35000).toLocaleString('fr-FR')}</div>
+          <div class="pc-currency">${params.DEVISE||'FCFA'} / mois</div>
+          ${isSuperAdmin?`<input class="price-inp" id="inp-com" type="number" value="${params.PRIX_COMMANDO||35000}">`:``}
+        </div>
+        <div class="price-card">
+          <div class="p-tier">NIVEAU 3</div>
+          <div class="pc-name">🎖️ Général</div>
+          <div class="pc-price" id="disp-gen">${Number(params.PRIX_GENERAL||75000).toLocaleString('fr-FR')}</div>
+          <div class="pc-currency">${params.DEVISE||'FCFA'} / mois</div>
+          ${isSuperAdmin?`<input class="price-inp" id="inp-gen" type="number" value="${params.PRIX_GENERAL||75000}">`:``}
+        </div>
+      </div>
+      ${isSuperAdmin?`<button class="btn btn-or mt-2" onclick="saveTarifs()">💾 Enregistrer les nouveaux tarifs</button>`:
+      `<p class="text-muted text-small mt-1">Seul le Super Admin peut modifier les tarifs.</p>`}
+    </div>
+
+    ${isSuperAdmin ? `
+    <div class="card">
+      <div class="card-header"><div class="card-title">👑 Gestion des <span>Administrateurs</span></div>
+        <button class="btn btn-primary btn-sm" onclick="openAddAdmin()">+ Ajouter Admin</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Nom</th><th>Rôle</th><th>Statut</th><th>Actions</th></tr></thead>
+          <tbody>${allAdmins.map(a=>`<tr>
+            <td><strong>${a.NOM}</strong><br><span class="text-small text-muted">${a.TELEPHONE||'—'}</span></td>
+            <td>${roleBadge(a.ROLE)}</td>
+            <td>${statusBadge(a.STATUT)}</td>
+            <td><div class="actions">
+              ${a.ROLE!=='SUPER_ADMIN'?`
+              <button class="action-btn ab-red" onclick="suspendreAdmin('${a.ID}')">Suspendre</button>
+              <button class="action-btn ab-green" onclick="activerAdmin('${a.ID}')">Activer</button>`:
+              `<span class="text-small text-muted">— Super Admin protégé</span>`}
+            </div></td>
+          </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>` : ''}
+  `;
+}
+
+async function saveTarifs() {
+  const bat = document.getElementById('inp-bat')?.value;
+  const com = document.getElementById('inp-com')?.value;
+  const gen = document.getElementById('inp-gen')?.value;
+  // Update params sheet rows
+  await updateRow('PARAMETRES','PRIX_BATISSEUR',bat,{'PRIX_BATISSEUR':bat});
+  await updateRow('PARAMETRES','PRIX_COMMANDO',com,{'PRIX_COMMANDO':com});
+  await updateRow('PARAMETRES','PRIX_GENERAL',gen,{'PRIX_GENERAL':gen});
+  params.PRIX_BATISSEUR = bat; params.PRIX_COMMANDO = com; params.PRIX_GENERAL = gen;
+  document.getElementById('disp-bat').textContent = Number(bat).toLocaleString('fr-FR');
+  document.getElementById('disp-com').textContent = Number(com).toLocaleString('fr-FR');
+  document.getElementById('disp-gen').textContent = Number(gen).toLocaleString('fr-FR');
+  toast('✅ Tarifs mis à jour','success');
+}
+
+function openAddAdmin() {
+  document.getElementById('modal-content').innerHTML = `
+    <h3>👑 Nouvel Administrateur</h3>
+    <div class="form-grid">
+      <div class="form-group"><label class="field-label">Nom Complet *</label><input class="inp" id="a-nom" placeholder="Prénom Nom"></div>
+      <div class="form-group"><label class="field-label">Mot de Passe *</label><input class="inp" id="a-pw" placeholder="Mot de passe"></div>
+      <div class="form-group"><label class="field-label">Rôle</label>
+        <select class="select" id="a-role">
+          <option value="ADMIN">ADMIN</option>
+          <option value="CHEF_GROUPE">CHEF_GROUPE</option>
+        </select></div>
+      <div class="form-group"><label class="field-label">Téléphone</label><input class="inp" id="a-tel" placeholder="+225 07 00 00 00"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-or" onclick="saveAdmin()">Créer →</button>
+    </div>
+  `;
+  openModal();
+}
+
+async function saveAdmin() {
+  const nom = document.getElementById('a-nom').value.trim();
+  const pw = document.getElementById('a-pw').value.trim();
+  if(!nom||!pw){toast('Nom et mot de passe obligatoires','error');return;}
+  const row = {
+    ID: genId('ADM'),
+    NOM: nom,
+    MOT_DE_PASSE: pw,
+    ROLE: document.getElementById('a-role').value,
+    TELEPHONE: document.getElementById('a-tel').value.trim(),
+    STATUT: 'ACTIF'
+  };
+  const r = await addRow('ADMINS', row);
+  if(r.success) {
+    allAdmins = await getSheet('ADMINS');
+    closeModal(); renderParametres(document.getElementById('admin-content'));
+    toast('✅ Administrateur créé','success');
+  } else { toast('Erreur création admin','error'); }
+}
+
+async function suspendreAdmin(id) {
+  await updateRow('ADMINS','ID',id,{STATUT:'SUSPENDU'});
+  allAdmins = await getSheet('ADMINS');
+  renderParametres(document.getElementById('admin-content'));
+  toast('Admin suspendu','info');
+}
+async function activerAdmin(id) {
+  await updateRow('ADMINS','ID',id,{STATUT:'ACTIF'});
+  allAdmins = await getSheet('ADMINS');
+  renderParametres(document.getElementById('admin-content'));
+  toast('Admin activé','success');
+}
+
+// ============================================================
+// MEMBER SCREEN
+// ============================================================
+async function loadMemberScreen() {
+  document.getElementById('member-name-label').textContent = currentUser.NOM_COMPLET;
+  document.getElementById('member-badge-label').textContent = currentUser.NIVEAU || 'MEMBRE';
+  allGroupes = await getSheet('GROUPES');
+  showScreen('s-member');
+  memberTab('profil');
+}
+
+function memberTab(tab) {
+  document.querySelectorAll('#s-member .nav-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  const el = document.getElementById('member-content');
+  el.innerHTML = '';
+  if(tab==='profil') renderMemberProfil(el);
+  else if(tab==='groupe') renderMemberGroupe(el);
+  else if(tab==='infos') renderMemberInfos(el);
+}
+
+function renderMemberProfil(el) {
+  const m = currentUser;
+  const ini = initials(m.NOM_COMPLET);
+  const expired = isExpired(m.DATE_EXPIRATION);
+  el.innerHTML = `
+    <div class="member-hero">
+      <div class="member-avatar">${ini}</div>
+      <h2 style="margin-bottom:.3rem">${m.NOM_COMPLET}</h2>
+      <p style="color:var(--text2);font-size:.85rem;margin-bottom:.8rem">${m.ENTREPRISE||'—'} · ${m.SECTEUR||'—'}</p>
+      ${niveauBadge(m.NIVEAU)} &nbsp; ${statusBadge(expired?'EXPIRE':m.STATUT)}
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:1rem">Informations du Compte</div>
+      <div class="info-row"><span class="info-label">Code d'accès</span><code style="color:var(--or);font-size:.85rem;font-weight:700">${m.CODE_ACCES}</code></div>
+      <div class="info-row"><span class="info-label">Téléphone</span><span class="info-val">${m.TELEPHONE}</span></div>
+      <div class="info-row"><span class="info-label">Membre depuis</span><span class="info-val">${formatDate(m.DATE_INSCRIPTION)}</span></div>
+      <div class="info-row"><span class="info-label">Accès valide jusqu'au</span>
+        <span class="info-val ${expired?'text-red':'text-green'}">${formatDate(m.DATE_EXPIRATION)}</span></div>
+      <div class="info-row"><span class="info-label">Niveau</span><span class="info-val">${m.NIVEAU||'—'}</span></div>
+    </div>
+    ${expired ? `
+    <div class="card" style="border-color:var(--red);background:var(--red-bg)">
+      <p style="color:var(--red);font-weight:600;margin-bottom:.5rem">⚠️ Votre accès a expiré</p>
+      <p class="text-small text-muted">Contactez l'administrateur pour renouveler votre abonnement.</p>
+      <button class="wa-btn mt-1" onclick="contactAdmin()">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Contacter l'administrateur
+      </button>
+    </div>` : ''}
+  `;
+}
+
+function renderMemberGroupe(el) {
+  const m = currentUser;
+  const groupe = allGroupes.find(g=>g.GROUPE_ID===m.GROUPE_ID);
+  const membresGroupe = groupe ? allMembers.filter(x=>x.GROUPE_ID===groupe.GROUPE_ID) : [];
+  const chef = groupe ? allMembers.find(x=>x.ID===groupe.CHEF_ID) : null;
+  if(!groupe) {
+    el.innerHTML = `<div class="card"><div class="empty"><div class="e-icon">🏘️</div><p>Vous n'êtes pas encore assigné(e) à un groupe.<br>Contactez l'administrateur.</p></div></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-title" style="margin-bottom:1rem">🏘️ ${groupe.NOM_GROUPE}</div>
+      <p class="text-muted text-small" style="margin-bottom:1rem">${groupe.DESCRIPTION||'—'}</p>
+      <div class="info-row"><span class="info-label">Chef de groupe</span><span class="info-val">${chef?chef.NOM_COMPLET:'—'}</span></div>
+      <div class="info-row"><span class="info-label">Membres</span><span class="info-val text-or">${membresGroupe.length}</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:1rem">👥 Membres du Groupe</div>
+      ${membresGroupe.map(x=>`
+        <div class="info-row">
+          <div>
+            <strong>${x.NOM_COMPLET}</strong>${x.ID===chef?.ID?' 👑':''}<br>
+            <span class="text-small text-muted">${x.ENTREPRISE||'—'} · ${x.SECTEUR||'—'}</span>
+          </div>
+          <div style="text-align:right">
+            ${niveauBadge(x.NIVEAU)}<br>
+            <button class="action-btn ab-green mt-1" onclick="waMembreGroupe('${x.TELEPHONE}','${x.NOM_COMPLET}')">📲</button>
+          </div>
+        </div>`).join('')}
+    </div>
+  `;
+}
+
+function waMembreGroupe(tel, nom) {
+  const phone = tel.replace(/[\s\+\-]/g,'');
+  const msg = encodeURIComponent(`Bonjour ${nom} 👋\nJe vous contacte via le *MIMI Business Club*.\n\n_Pas de motivation, que de l'opérationnel._`);
+  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${msg}`,'_blank');
+}
+
+function renderMemberInfos(el) {
+  const prix = {
+    'BÂTISSEUR': params.PRIX_BATISSEUR || 15000,
+    'COMMANDO': params.PRIX_COMMANDO || 35000,
+    'GÉNÉRAL': params.PRIX_GENERAL || 75000
+  };
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-title" style="margin-bottom:1rem">📋 Informations du Club</div>
+      <div class="info-row"><span class="info-label">Nom du Club</span><span class="info-val">${params.NOM_CLUB||'MIMI Business Club'}</span></div>
+      <div class="info-row"><span class="info-label">Contact Admin</span><span class="info-val text-or">${params.TELEPHONE_ADMIN||WA_ADMIN}</span></div>
+      <div class="info-row"><span class="info-label">Votre Abonnement</span>${niveauBadge(currentUser.NIVEAU)}</div>
+      <div class="info-row"><span class="info-label">Tarif mensuel</span>
+        <span class="info-val text-or">${Number(prix[currentUser.NIVEAU]||15000).toLocaleString('fr-FR')} ${params.DEVISE||'FCFA'}</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:1rem">📞 Contacter l'Administrateur</div>
+      <p class="text-muted text-small" style="margin-bottom:1rem">Pour toute question sur votre abonnement, votre accès ou le programme.</p>
+      <button class="wa-btn" onclick="contactAdmin()">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Écrire à l'administrateur
+      </button>
+    </div>
+  `;
+}
+
+function contactAdmin() {
+  const phone = (params.TELEPHONE_ADMIN||WA_ADMIN).replace(/[\s\+\-]/g,'');
+  const msg = encodeURIComponent(`Bonjour,\n\nJe suis *${currentUser.NOM_COMPLET}* (${currentUser.NIVEAU}), membre du *${params.NOM_CLUB||'MIMI Business Club'}*.\n\nCode d'accès: ${currentUser.CODE_ACCES}\n\nJe vous contacte pour...`);
+  window.open(`https://api.whatsapp.com/send?phone=${phone}&text=${msg}`,'_blank');
+}
+</script>
+</body>
+</html>
