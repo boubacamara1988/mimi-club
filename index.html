@@ -300,21 +300,35 @@ let currentAdminTab = 'dashboard';
 // ============================================================
 async function apiCall(action, sheet, extra = {}) {
   try {
-    const body = JSON.stringify({ action, sheet, ...extra });
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      body,
-      headers: { 'Content-Type': 'text/plain' }
-    });
-    const data = await res.json();
-    return data;
+    if(action === 'getAll') {
+      // Use GET for reads to avoid CORS issues
+      const params = new URLSearchParams({ action, sheet });
+      const res = await fetch(API_URL + '?' + params.toString(), {
+        method: 'GET',
+        redirect: 'follow'
+      });
+      const text = await res.text();
+      try { return JSON.parse(text); } catch(e) { return { success: false, error: 'Parse error: ' + text.substring(0,100) }; }
+    } else {
+      // Use POST for writes
+      const body = JSON.stringify({ action, sheet, ...extra });
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body,
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      const text = await res.text();
+      try { return JSON.parse(text); } catch(e) { return { success: false, error: 'Parse error' }; }
+    }
   } catch(e) {
     return { success: false, error: e.toString() };
   }
 }
 async function getSheet(sheet) {
   const r = await apiCall('getAll', sheet, { sheet });
-  return r.success ? r.data : [];
+  if(!r.success) { console.warn('getSheet failed:', sheet, r.error); return []; }
+  return r.data || [];
 }
 async function addRow(sheet, row) {
   return await apiCall('addRow', sheet, { sheet, row });
@@ -411,10 +425,16 @@ async function handleLogin() {
   allMembers = await getSheet('MEMBRES');
 
   // Check admin
-  const admin = allAdmins.find(a =>
-    (a.NOM.toUpperCase().includes(id) || a.ID.toUpperCase() === id) &&
-    a.MOT_DE_PASSE === pw && a.STATUT === 'ACTIF'
-  );
+  // Debug: log what we got
+  console.log('Admins loaded:', allAdmins.length, allAdmins);
+  const admin = allAdmins.find(a => {
+    const nomMatch = a.NOM && a.NOM.toString().toUpperCase().includes(id);
+    const idMatch = a.ID && a.ID.toString().toUpperCase() === id;
+    const pwMatch = a.MOT_DE_PASSE && a.MOT_DE_PASSE.toString().trim() === pw.trim();
+    const actif = a.STATUT && a.STATUT.toString().trim() === 'ACTIF';
+    console.log('Checking admin:', a.NOM, '| nomMatch:', nomMatch, '| pwMatch:', pwMatch, '| actif:', actif);
+    return (nomMatch || idMatch) && pwMatch && actif;
+  });
   if(admin) {
     currentUser = admin;
     currentRole = admin.ROLE === 'SUPER_ADMIN' ? 'super_admin' : admin.ROLE === 'CHEF_GROUPE' ? 'chef_groupe' : 'admin';
